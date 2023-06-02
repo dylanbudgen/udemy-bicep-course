@@ -13,13 +13,46 @@ param storageAccountName string
 ])
 param storageAccountSku string
 
-@description('Restrict storage account to only HTTPS traffic')
-param supportsHttpsTrafficOnly bool = true
+var stringExample = 'string-example'
 
-var storageAccountProperties = {
-  minimumTlsVersion: 'TLS1_2'
-  supportsHttpsTrafficOnly: supportsHttpsTrafficOnly
+var anotherStringExample = 'another-${stringExample}'
+
+var array = [
+  'value1'
+  'value2'
+]
+
+var mixedArray = [
+  'value1'
+  2
+]
+
+var storageAccountConfig = {
+  sku: 'Standar***'
+  kind: 
 }
+
+var object = {
+  name: 'Dylan'
+  number: 07812312312
+  postcode: 'SE00000'
+}
+
+var nestedObject = {
+  value: {
+    value: 1
+  }
+  value2: [
+    'value'
+  ]
+}
+
+
+
+output arrayValue string = array[0]
+
+
+
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   name: storageAccountName
@@ -28,7 +61,10 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     name: storageAccountSku
   }
   kind: 'StorageV2'
-  properties: storageAccountProperties
+  properties: {
+    minimumTlsVersion: 'TLS1_2'
+    supportsHttpsTrafficOnly: true
+  }
 }
 
 output storageAccountName string = storageAccount.name
