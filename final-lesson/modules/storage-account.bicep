@@ -52,7 +52,7 @@ param accessTier string = 'Hot'
 param allowSharedKeyAccess bool = true
 
 @description('Enable SFTP access')
-param isSftpEnabled bool = false
+param sftpEnabled bool = false
 
 @description('Network rule set. https://docs.microsoft.com/en-us/azure/templates/microsoft.storage/storageaccounts?tabs=bicep#networkruleset')
 param networkAcls object = {
@@ -86,7 +86,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     minimumTlsVersion: 'TLS1_2'
     supportsHttpsTrafficOnly: true
     isHnsEnabled: true
-    isSftpEnabled: isSftpEnabled
+    isSftpEnabled: sftpEnabled
   }
 }
 
