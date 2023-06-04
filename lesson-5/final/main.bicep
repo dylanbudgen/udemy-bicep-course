@@ -1,5 +1,4 @@
 
-
 @description('Location for the resources')
 param location string = 'westeurope'
 
@@ -18,6 +17,8 @@ param storageAccountSku string
 @description('Restrict storage account to only HTTPS traffic')
 param supportsHttpsTrafficOnly bool = true
 
+var storageAccountKind = 'StorageV2'
+
 var storageAccountProperties = {
   minimumTlsVersion: 'TLS1_2'
   supportsHttpsTrafficOnly: supportsHttpsTrafficOnly
@@ -29,18 +30,26 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   sku: {
     name: storageAccountSku
   }
-  kind: 'StorageV2'
+  kind: storageAccountKind
   properties: storageAccountProperties
 }
 
+// scope functions
 
-// resource group
 var resourceGroupId = resourceGroup().id
 var resourceGroupName = resourceGroup().name
 
-// resource specific 
+var subscriptionName = subscription().displayName
+
+// resource functions
+var storageAccountId = resourceId('Microsoft.Storage/storageAccounts@2022-09-01', storageAccountName)
+var storageAccountId1 = resourceId(resourceGroup().name, 'Microsoft.Storage/storageAccounts@2022-09-01', storageAccountName)
+
+var resource = reference('Microsoft.KeyVault', 'kvbicepcoursedev')
+var secret = resource.getSecret(secretName)
+
 var storageAccountKey = storageAccount.listKeys().keys[0]
-var dd = storageAccount.identity.principalId
+var storageAccountPrincipalId = storageAccount.identity.principalId
 
 // guid generation
 var hashedGuid = guid(resourceGroup().id, storageAccountName)
@@ -59,16 +68,10 @@ var joinedArray2 = union(array, generatedArray) // duplicates ignored
 var firstElement = first(array)
 var lastElement = last(array)
 
-
 var arrayContains = contains(array, 'value1')
 var indexOf = contains(array, 'value1') //-1 if not found
 var arrayLength = length(array)
-
 var isArrayEmpty = empty(array)
-
-
-
-// resource functions
 
 // data types
 var boolean = bool('true')
@@ -98,20 +101,3 @@ var numArray = [
 
 var minimum = min(numArray)
 var maximum = max(numArray)
-
-// conditionals
-
-
-
-var randomGuid2 = guid('stor')
-
-
-// advanced?? 
-// files
-
-// json??
-
-
-// lambda functions
-
-// date functions

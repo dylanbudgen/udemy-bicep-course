@@ -1,6 +1,6 @@
 
 @description('Location for the resources')
-param location string
+param location string = 'westeurope'
 
 @minLength(3)
 @maxLength(24)
@@ -12,17 +12,7 @@ param storageAccountName string
   'Standard_GRS'
   'Standard_LRS'
 ])
-param storageAccountSku string = 'Standard_LRS'
-
-@description('The type of storage account')
-@allowed([
-  'BlobStorage'
-  'BlockBlobStorage'
-  'FileStorage'
-  'StorageV2'
-])
-param storageAccountKind string = 'StorageV2'
-
+param storageAccountSku string
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   name: storageAccountName
@@ -30,7 +20,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   sku: {
     name: storageAccountSku
   }
-  kind: storageAccountKind
+  kind: 'StorageV2'
   properties: {
     minimumTlsVersion: 'TLS1_2'
     supportsHttpsTrafficOnly: true

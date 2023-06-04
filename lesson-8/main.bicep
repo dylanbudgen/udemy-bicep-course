@@ -1,5 +1,3 @@
-
-
 @description('Location for the resources')
 param location string = 'westeurope'
 
@@ -20,30 +18,62 @@ param auditStorageAccountName string
 ])
 param storageAccountSku string
 
-// explain how the name here is different
-module storageAccount 'modules/storage-account.bicep' = {
+@description('Deploy the audit storage account')
+param deployAuditStorageAccount bool = true
+
+@description('Deploy the audit storage account containers')
+param deployAuditStorageContainers bool = true
+
+@description('ID of the AD group for role assignment')
+param adGroupId string
+
+var storageBlobDataReaderId = '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
+
+var auditStorageContainers = [
+  'audit'
+  'logs'
+]
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   name: storageAccountName
-  params: {
-    location: location
-    storageAccountName: storageAccountName
-    storageAccountSku: storageAccountSku
+  location: location
+  sku: {
+    name: storageAccountSku
+  }
+  kind: 'StorageV2'
+  properties: {
+    minimumTlsVersion: 'TLS1_2'
+    supportsHttpsTrafficOnly: true
   }
 }
 
-module auditStorageAccount 'modules/storage-account.bicep' = {
+module auditStorageAccount 'modules/storage-account.bicep' = if (deployAuditStorageAccount) {
   name: auditStorageAccountName
   params: {
     location: location
     storageAccountName: auditStorageAccountName
     storageAccountSku: storageAccountSku
+    containerNames: deployAuditStorageContainers ? auditStorageContainers : []
   }
 }
 
+var storageAccountNames = deployAuditStorageAccount ? [
+  storageAccount.name
+  auditStorageAccount.outputs.storageAccountName
+] : [
+  storageAccount.name
+]
 
-output storageAccountName string = storageAccount.outputs.storageAccountName // storageAccount.name // explain how thats the deployment name
-output storageAccountId string = storageAccount.outputs.storageAccountId
+module roleAssignments 'modules/storage-role-assignments.bicep' = {
+  name: 'storage-role-assignments'
+  params: {
+    adGroupId: adGroupId
+    roleAssignmentId: storageBlobDataReaderId
+    storageAccountNames: storageAccountNames
+  }
+}
+output storageAccountName string = storageAccount.name // storageAccount.name // explain how thats the deployment name
+output storageAccountId string = storageAccount.id
 
 output auditStorageAccountName string = auditStorageAccount.outputs.storageAccountName // storageAccount.name // explain how thats the deployment name
 output auditStorageAccountId string = auditStorageAccount.outputs.storageAccountId
-
-

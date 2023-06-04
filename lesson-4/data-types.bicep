@@ -1,7 +1,7 @@
 
 
 @secure()
-param password string =''
+param password string = ''
 
 var stringExample = 'string-example'
 
@@ -39,9 +39,6 @@ var tags = {
 var enviroment = tags.environment
 
 var joinedObjects = union(object, tags)
-
-
-
 
 var storageAccountConfig = {
   sku: 'Standard_LRS'

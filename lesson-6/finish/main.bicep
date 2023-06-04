@@ -1,5 +1,4 @@
 
-
 @description('Location for the resources')
 param location string = 'westeurope'
 
@@ -20,7 +19,6 @@ param auditStorageAccountName string
 ])
 param storageAccountSku string
 
-// explain how the name here is different
 module storageAccount 'modules/storage-account.bicep' = {
   name: storageAccountName
   params: {
@@ -39,11 +37,8 @@ module auditStorageAccount 'modules/storage-account.bicep' = {
   }
 }
 
-
 output storageAccountName string = storageAccount.outputs.storageAccountName // storageAccount.name // explain how thats the deployment name
 output storageAccountId string = storageAccount.outputs.storageAccountId
 
 output auditStorageAccountName string = auditStorageAccount.outputs.storageAccountName // storageAccount.name // explain how thats the deployment name
 output auditStorageAccountId string = auditStorageAccount.outputs.storageAccountId
-
-

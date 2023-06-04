@@ -1,5 +1,4 @@
 
-
 @description('Location for the resources')
 param location string = 'westeurope'
 
@@ -18,6 +17,8 @@ param storageAccountSku string
 @description('Restrict storage account to only HTTPS traffic')
 param supportsHttpsTrafficOnly bool = true
 
+var storageAccountKind = 'StorageV2'
+
 var storageAccountProperties = {
   minimumTlsVersion: 'TLS1_2'
   supportsHttpsTrafficOnly: supportsHttpsTrafficOnly
@@ -29,7 +30,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   sku: {
     name: storageAccountSku
   }
-  kind: 'StorageV2'
+  kind: storageAccountKind
   properties: storageAccountProperties
 }
 

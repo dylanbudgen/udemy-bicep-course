@@ -1,4 +1,9 @@
 
+// TODO add conditional deployment
+// TODO add input array? 
+// add cosmos? then the pricing models makes the module complex
+
+
 @minLength(3)
 @maxLength(11)
 param location string = 'westeurope'
