@@ -3,10 +3,13 @@
 @description('Location for the resources')
 param location string = 'westeurope'
 
-// todo add max min
+@minLength(3)
+@maxLength(24)
 @description('The name of the storage account')
 param storageAccountName string
 
+@minLength(3)
+@maxLength(24)
 @description('The name of the audit storage account')
 param auditStorageAccountName string
 

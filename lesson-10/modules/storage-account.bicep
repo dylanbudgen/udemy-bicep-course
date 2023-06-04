@@ -3,6 +3,9 @@
 @description('Location for the resources')
 param location string 
 
+@description('Tags for all resources')
+param tags object = {}
+
 @minLength(3)
 @maxLength(24)
 @description('The name of the storage account')
@@ -27,10 +30,13 @@ param storageAccountKind string = 'StorageV2'
 @description('The names of containers for creation')
 param containerNames array = []
 
+@description('Enable SFTP access to storage account')
+param sftpEnabled bool = false
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   name: storageAccountName
   location: location
+  tags: tags
   sku: {
     name: storageAccountSku
   }
@@ -38,6 +44,8 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   properties: {
     minimumTlsVersion: 'TLS1_2'
     supportsHttpsTrafficOnly: true
+    isSftpEnabled: sftpEnabled
+    isHnsEnabled: sftpEnabled ? true : false // required for SFTP
   }
 }
 

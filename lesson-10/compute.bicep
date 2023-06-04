@@ -1,19 +1,16 @@
 
 
-//lower camel case
-
 @minLength(3)
 @maxLength(11)
 param location string = 'westeurope'
 
+@description('Tags for all resources')
+param tags object = {}
+
+@minLength(3)
+@maxLength(24)
 @description('Name of the storage account')
 param storageAccountName string
-
-@description('SKU for storage accounts')
-param storageAccountSku string
-
-@description('Name of the app service plan SKU')
-param appServicePlanSku string
 
 @description('Name of the function app')
 param functionAppName string
@@ -28,50 +25,24 @@ param applicationInsightsName string
 @description('Key for our useful API')
 param apiKey string
 
-var containerNames = [
-  'container'
-  'container2'
-]
 
-// TODO include a loop somewhere
-// note about deployment names
-
-module storageAccount 'modules/storage-account.bicep' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
   name: storageAccountName
-  params: {
-    location: location
-    tags: {}
-    storageAccountName: storageAccountName
-    storageAccountSku: storageAccountSku
-    containerNames: containerNames
-  }
 }
 
-resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
-  name: applicationInsightsName
-  location: location
-  kind: 'web'
-  properties: {
-    Application_Type: 'web'
-    Request_Source: 'rest'
-  }
-}
-
-// TODO compare to modules
-resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
+resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' existing = {
   name: appServicePlanName
-  location: location
-  sku: {
-    name: appServicePlanSku
-  }
-  properties: {}
 }
 
-// list keys somewhere
+resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing = {
+  name: applicationInsightsName
+}
+
 
 resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
   name: functionAppName
   location: location
+  tags: tags
   kind: 'functionapp'
   identity: {
     type: 'SystemAssigned'
@@ -114,5 +85,5 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
   }
 }
 
-// outputs cannot have sensitive date, use existing
 output functionAppName string = functionApp.name
+output functionAppId string = functionApp.id

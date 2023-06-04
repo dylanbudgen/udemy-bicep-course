@@ -1,0 +1,33 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "tags": {
+            "value": {
+                "environment": "dev",
+                "owner": "Dylan Budgen"
+            }
+        },
+        "storageAccountName": {
+            "value": "stbicepcoursedev"
+        },
+        "storageAccountSku": {
+            "value": "Standard_LRS"
+        },
+        "appServicePlanName": {
+            "value": "app-bicep-course-dev"
+        },
+        "appServicePlanSku": {
+            "value": "B1"
+        },
+        "functionAppName": {
+            "value": "func-bicep-course-dev"
+        },
+        "applicationInsightsName": {
+            "value": "appi-bicep-course-dev"
+        },
+        "apiKey": {
+            "value": "secret-value"
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageAccountName": {
+            "value": "stbicepcoursedev"
+        },
+        "adGroupId": {
+            "value": "3b83321f-7bea-4370-8e8f-501f15e7940c"
+        }
+    }
+}
