@@ -40,7 +40,6 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing
 
 var storageAccountConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
 
-
 resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
   name: functionAppName
   location: location
@@ -52,6 +51,7 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
   properties: {
     serverFarmId: appServicePlan.id
     siteConfig: {
+      windowsFxVersion: 'DOTNETCORE|LTS'
       alwaysOn: true
       use32BitWorkerProcess: false
       appSettings: [
@@ -86,6 +86,7 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
     httpsOnly: true
   }
 }
+
 
 output functionAppName string = functionApp.name
 output functionAppId string = functionApp.id

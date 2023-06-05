@@ -1,2 +1,0 @@
-
-// user defined object types
