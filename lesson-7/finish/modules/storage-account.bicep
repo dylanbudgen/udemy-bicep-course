@@ -1,5 +1,4 @@
 
-
 @description('Location for the resources')
 param location string 
 
