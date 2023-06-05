@@ -3,7 +3,7 @@
 param location string = 'westeurope'
 
 @minLength(3)
-@maxLength(24)
+@maxLength(23)
 @description('The name of the storage account')
 param storageAccountName string
 
