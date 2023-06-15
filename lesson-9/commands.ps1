@@ -1,2 +1,2 @@
-Test-AzTemplate -TemplatePath /Users/dylanbudgen/Workspace/udemy-bicep-course/lesson-9/main.json
-Test-AzTemplate -TemplatePath /Users/dylanbudgen/Workspace/udemy-bicep-course/lesson-9/main.json -Skip 'Location Should Not Be Hardcoded'
+Test-AzTemplate -TemplatePath /Users/dylanbudgen/Workspace/udemy-tutorials/main.json
+Test-AzTemplate -TemplatePath /Users/dylanbudgen/Workspace/udemy-tutorials/main.json -Skip 'Location Should Not Be Hardcoded'

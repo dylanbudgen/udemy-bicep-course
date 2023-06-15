@@ -1,90 +1,94 @@
 
-// TODO add conditional deployment
-// TODO add input array? 
-// add cosmos? then the pricing models makes the module complex
+@description('Location for the resources')
+param location string = resourceGroup().location
 
-
-@minLength(3)
-@maxLength(11)
-param location string = 'westeurope'
-
-@description('Shared tags for all resources')
+@description('Tags for all resources')
 param tags object = {}
 
 @minLength(3)
 @maxLength(24)
-@description('Name of the storage account')
+@description('The name of the storage account')
 param storageAccountName string
 
-@description('SKU for storage accounts')
-param storageAccountSku string
+@minLength(3)
+@maxLength(24)
+@description('The name of the SFTP storage account')
+param sftpStorageAccountName string
 
-@description('Name of the app service plan')
-param appServicePlanName string
-
-@description('Name of the app service plan SKU')
-param appServicePlanSku string
-
-@description('Name of the function app')
-param functionAppName string
-
-@description('Name of the application insights')
+@description('The name of the application insights resource')
 param applicationInsightsName string
 
-@secure()
-@description('Key for our useful API')
-param apiKey string
+@description('The name of the app service plan resource')
+param appServicePlanName string
 
-var containerNames = [
-  'data'
-  'backups'
-]
+@description('The name of our function app resource')
+param functionAppName string
+
+@description('Name of the SKU')
+@allowed([
+  'Standard_GRS'
+  'Standard_LRS'
+])
+param storageAccountSku string
+
+@allowed([
+  'S1'
+  'B1'
+])
+param appServicePlanSku string = 'B1'
+
+@secure()
+@description('API key for our really interesting API')
+param apiKey string 
+
 
 module storageAccount 'modules/storage-account.bicep' = {
-  name: 'storage-${storageAccountName}'
+  name: 'deploy-${storageAccountName}'
   params: {
     location: location
     tags: tags
     storageAccountName: storageAccountName
-    storageAccountSku: storageAccountSku
-    containerNames: containerNames
-    sftpEnabled: true
+    storageAccountSku: storageAccountSku 
   }
 }
 
-resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
-  name: applicationInsightsName
-  location: location
-  tags: tags
-  kind: 'web'
-  properties: {
-    Application_Type: 'web'
-    Request_Source: 'rest'
-  }
-}
-
-resource appServicePlan 'Microsoft.Web/serverfarms@2021-03-01' = {
-  name: appServicePlanName
-  location: location
-  tags: tags
-  sku: {
-    name: appServicePlanSku
-  }
-  properties: {}
-}
-
-module functionApp 'compute.bicep' = {
-  name: 'compute-${functionAppName}'
+module sftpStorageAccount 'modules/storage-account.bicep' = {
+  name: 'deploy-${sftpStorageAccountName}'
   params: {
     location: location
     tags: tags
-    apiKey: apiKey
-    applicationInsightsName: applicationInsights.name
-    appServicePlanName: appServicePlan.name
-    functionAppName: functionAppName
-    storageAccountName: storageAccount.outputs.storageAccountName
+    storageAccountName: sftpStorageAccountName
+    storageAccountSku: storageAccountSku
+    isSftpEnabled: true
   }
 }
 
-output functionAppName string = functionApp.outputs.functionAppName
-output functionAppId string = functionApp.outputs.functionAppId
+module applicationInsights 'modules/application-insights.bicep' = {
+  name: 'deploy-${applicationInsightsName}'
+  params: {
+    applicationInsightsName: applicationInsightsName
+    location: location
+    tags: tags
+  }
+}
+
+module compute 'compute.bicep' = {
+  name: 'compute'
+  params: {
+    apiKey: apiKey
+    applicationInsightsName: applicationInsightsName
+    appServicePlanName: appServicePlanName
+    functionAppName: functionAppName
+    appServicePlanSku: appServicePlanSku
+    location: location
+    storageAccountName: storageAccountName
+    tags: tags 
+  }
+}
+
+
+output storageAccountName string = storageAccount.outputs.storageAccountName
+output applicationInsightsName string = applicationInsights.outputs.applicationInsightsName
+output appServicePlanName string = compute.outputs.appServicePlan
+output functionAppName string = compute.outputs.functionAppName
+

@@ -1,92 +1,60 @@
-
-
-@minLength(3)
-@maxLength(11)
-param location string = 'westeurope'
+@description('Location for the resources')
+param location string
 
 @description('Tags for all resources')
 param tags object = {}
 
 @minLength(3)
 @maxLength(24)
-@description('Name of the storage account')
+@description('The name of the storage account')
 param storageAccountName string
 
-@description('Name of the function app')
+@description('The name of our function app resource')
 param functionAppName string
 
-@description('Name of the app service plan')
+@description('The name of the app service plan resource')
 param appServicePlanName string
 
-@description('Name of the application insights')
+@description('The name of the application insights resource')
 param applicationInsightsName string
 
+@allowed([
+  'S1'
+  'B1'
+])
+param appServicePlanSku string
+
 @secure()
-@description('Key for our useful API')
-param apiKey string
+@description('API key for our really interesting API')
+param apiKey string 
 
-
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
-  name: storageAccountName
-}
-
-resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' existing = {
-  name: appServicePlanName
-}
-
-resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing = {
-  name: applicationInsightsName
-}
-
-var storageAccountConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
-
-resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
-  name: functionAppName
-  location: location
-  tags: tags
-  kind: 'functionapp'
-  identity: {
-    type: 'SystemAssigned'
-  }
-  properties: {
-    serverFarmId: appServicePlan.id
-    siteConfig: {
-      windowsFxVersion: 'DOTNETCORE|LTS'
-      alwaysOn: true
-      use32BitWorkerProcess: false
-      appSettings: [
-        {
-          name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
-          value: applicationInsights.properties.InstrumentationKey
-        }
-        {
-          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-          value: applicationInsights.properties.ConnectionString
-        }
-        {
-          name: 'AzureWebJobsStorage'
-          value: storageAccountConnectionString
-        }
-        {
-          name: 'FUNCTIONS_EXTENSION_VERSION'
-          value: '~4'
-        }
-        {
-          name: 'FUNCTIONS_WORKER_RUNTIME'
-          value: 'dotnet'
-        }
-        {
-          name: 'ApiKey'
-          value: apiKey
-        }
-      ]
-      ftpsState: 'FtpsOnly'
-      minTlsVersion: '1.2'
-    }
-    httpsOnly: true
+module appServicePlan 'modules/app-service-plan.bicep' = {
+  name: 'deploy-${appServicePlanName}'
+  params: {
+    appServicePlanName: appServicePlanName
+    location: location
+    appServicePlanSku: appServicePlanSku
   }
 }
 
+module functionApp 'modules/function-app.bicep' = {
+  name: 'deploy-${functionAppName}'
+  params: {
+    appServicePlanName: appServicePlanName
+    appSettings: [
 
-output functionAppName string = functionApp.name
-output functionAppId string = functionApp.id
+      {
+        name: 'ApiKey'
+        value: apiKey
+      }
+    ]
+    applicationInsightsName: applicationInsightsName
+    functionAppName: functionAppName
+    storageAccountName: storageAccountName
+    location: location
+    tags: tags
+  }
+}
+
+output appServicePlan string = appServicePlan.outputs.appServicePlanName
+output functionAppName string = functionApp.outputs.functionAppName

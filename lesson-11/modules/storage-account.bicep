@@ -21,17 +21,16 @@ param storageAccountSku string = 'Standard_LRS'
 @description('The type of storage account')
 @allowed([
   'BlobStorage'
-  'BlockBlobStorage'
-  'FileStorage'
   'StorageV2'
 ])
 param storageAccountKind string = 'StorageV2'
 
+@description('Set storage account SFTP enabled')
+param isSftpEnabled bool = false
+
 @description('The names of containers for creation')
 param containerNames array = []
 
-@description('Enable SFTP access to storage account')
-param sftpEnabled bool = false
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   name: storageAccountName
@@ -44,12 +43,12 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   properties: {
     minimumTlsVersion: 'TLS1_2'
     supportsHttpsTrafficOnly: true
-    isSftpEnabled: sftpEnabled
-    isHnsEnabled: sftpEnabled ? true : false // required for SFTP
+    isSftpEnabled: isSftpEnabled
+    isHnsEnabled: isSftpEnabled ? true : false
   }
 }
 
-resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2021-02-01' = {
+resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2021-02-01' = if(!empty(containerNames)) {
   name: 'default'
   parent: storageAccount
 }

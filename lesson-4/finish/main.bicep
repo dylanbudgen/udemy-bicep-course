@@ -19,11 +19,6 @@ param supportsHttpsTrafficOnly bool = true
 
 var storageAccountKind = 'StorageV2'
 
-var storageAccountProperties = {
-  minimumTlsVersion: 'TLS1_2'
-  supportsHttpsTrafficOnly: supportsHttpsTrafficOnly
-}
-
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   name: storageAccountName
   location: location
@@ -31,7 +26,10 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     name: storageAccountSku
   }
   kind: storageAccountKind
-  properties: storageAccountProperties
+  properties: {
+    minimumTlsVersion: 'TLS1_2'
+    supportsHttpsTrafficOnly: supportsHttpsTrafficOnly
+  }
 }
 
 output storageAccountName string = storageAccount.name

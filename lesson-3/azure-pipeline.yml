@@ -1,26 +1,24 @@
-# Starter pipeline
-
-
-# TODO remove sensitive values
-
 pool:
   vmImage: ubuntu-latest
 
-steps:
+jobs:
+  - job: deploy_infrastructure
+    displayName: Deploy Infrastructure
+    dependsOn: validate_infrastructure
+    steps:
+      - script: |
+          az bicep build main.bicep
+        displayName: "Compile main.bicep"
 
-- script: |
-    az bicep build main.bicep
-  displayName: 'Compile main.bicep'
-
-- task: AzureResourceManagerTemplateDeployment@3
-  displayName: Deploy main.bicep
-  inputs:
-    deploymentScope: 'Resource Group'
-    azureResourceManagerConnection: 'udemy-courses(9f53062f-e565-443b-8eb8-63aeb88dc7fd)'
-    subscriptionId: '9f53062f-e565-443b-8eb8-63aeb88dc7fd'
-    action: 'Create Or Update Resource Group'
-    resourceGroupName: 'bicep-course'
-    location: 'West Europe'
-    templateLocation: 'Linked artifact'
-    csmFile: 'main.json'
-    deploymentMode: 'Incremental'
+      - task: AzureResourceManagerTemplateDeployment@3
+        displayName: Deploy main.bicep
+        inputs:
+          deploymentScope: "Resource Group"
+          azureResourceManagerConnection: "udemy-courses(9f53062f-e565-443b-8eb8-63aeb88dc7fd)"
+          subscriptionId: "9f53062f-e565-443b-8eb8-63aeb88dc7fd"
+          action: "Create Or Update Resource Group"
+          resourceGroupName: "bicep-course"
+          location: "West Europe"
+          templateLocation: "Linked artifact"
+          csmFile: "main.json"
+          deploymentMode: "Incremental"
