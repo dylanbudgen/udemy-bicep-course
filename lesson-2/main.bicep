@@ -13,8 +13,8 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   }
 }
 
-resource loggingStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
-  name: 'stloggingdev'
+resource auditStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+  name: 'stauditcoursedev'
   location: 'westeurope'
   sku: {
     name: 'Standard_LRS'

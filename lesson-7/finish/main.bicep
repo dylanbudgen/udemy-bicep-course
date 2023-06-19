@@ -71,8 +71,8 @@ module roleAssignments 'modules/storage-role-assignments.bicep' = {
   }
 }
 
-output storageAccountName string = storageAccount.name // storageAccount.name // explain how thats the deployment name
+output storageAccountName string = storageAccount.name
 output storageAccountId string = storageAccount.id
 
-output auditStorageAccountName string = auditStorageAccount.outputs.storageAccountName // storageAccount.name // explain how thats the deployment name
+output auditStorageAccountName string = auditStorageAccount.outputs.storageAccountName
 output auditStorageAccountId string = auditStorageAccount.outputs.storageAccountId

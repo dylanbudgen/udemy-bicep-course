@@ -4,7 +4,7 @@ pool:
 jobs:
   - job: deploy_infrastructure
     displayName: Deploy Infrastructure
-    dependsOn: validate_infrastructure
+    dependsOn: deploy_infrastructure
     steps:
       - script: |
           az bicep build main.bicep
