@@ -1,14 +1,12 @@
+
+TODO update me
 pool:
   vmImage: ubuntu-latest
 
 jobs:
   - job: deploy_infrastructure
     displayName: Deploy Infrastructure
-    dependsOn: deploy_infrastructure
     steps:
-      - script: |
-          az bicep build main.bicep
-        displayName: "Compile main.bicep"
 
       - task: AzureResourceManagerTemplateDeployment@3
         displayName: Deploy main.bicep
@@ -20,5 +18,5 @@ jobs:
           resourceGroupName: "bicep-course"
           location: "West Europe"
           templateLocation: "Linked artifact"
-          csmFile: "main.json"
+          csmFile: "main.bicep"
           deploymentMode: "Incremental"

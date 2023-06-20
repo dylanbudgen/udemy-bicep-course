@@ -1,14 +1,26 @@
 
+// secure parameters
 
 @secure()
-param password string = ''
+param password string
 
-var stringExample = 'string-example'
+// strings
 
-var anotherStringExample = 'another-${stringExample}'
-
+var exampleString = 'string-example'
+var exampleStringTwo = 'another-${exampleString}'
 var multilineString = '''
 demo'''
+
+// integers
+
+var exampleInteger = 100323
+
+// booleans
+
+var exampleBoolean = true
+var exampleBooleanTwo = false
+
+// arrays
 
 var array = [
   'value1'
@@ -25,6 +37,8 @@ var mixedArray = [
 
 var joinedArray = union(array, mixedArray)
 
+// objects
+
 var object = {
   name: 'Dylan'
   number: 07812312312
@@ -36,7 +50,7 @@ var tags = {
   owner: 'Dylan Budgen'
 }
 
-var enviroment = tags.environment
+var environment = tags.environment
 
 var joinedObjects = union(object, tags)
 
