@@ -1,13 +1,6 @@
 
-# incremental mode
-az deployment group create \
-    --subscription udemy-courses \
-    --resource-group bicep-course \
-    --name deployment \
-    --mode Incremental \
-    --template-file main.bicep
+# azure cli
 
-# complete mode
 az deployment group create \
     --subscription udemy-courses \
     --resource-group bicep-course \

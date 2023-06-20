@@ -1,6 +1,8 @@
-New-AzResourceGroupDeployment `
-    -Name deployment `
-    -ResourceGroupName bicep-course `
-    -TemplateFile main.bicep
 
-    TODO test
+# powershell
+
+New-AzResourceGroupDeployment `
+  -Name deployment `
+  -SubscriptionName udemy-courses `
+  -ResourceGroupName bicep-course `
+  -TemplateFile main.bicep

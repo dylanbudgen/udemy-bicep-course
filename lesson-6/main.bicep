@@ -1,6 +1,6 @@
 
 @description('Location for the resources')
-param location string = 'westeurope'
+param location string = resourceGroup().location
 
 @minLength(3)
 @maxLength(23)
@@ -37,8 +37,8 @@ module auditStorageAccount 'modules/storage-account.bicep' = {
   }
 }
 
-output storageAccountName string = storageAccount.outputs.storageAccountName // storageAccount.name // explain how thats the deployment name
+output storageAccountName string = storageAccount.outputs.storageAccountName
 output storageAccountId string = storageAccount.outputs.storageAccountId
 
-output auditStorageAccountName string = auditStorageAccount.outputs.storageAccountName // storageAccount.name // explain how thats the deployment name
+output auditStorageAccountName string = auditStorageAccount.outputs.storageAccountName
 output auditStorageAccountId string = auditStorageAccount.outputs.storageAccountId
