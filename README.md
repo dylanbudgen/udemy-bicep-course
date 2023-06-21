@@ -2,7 +2,7 @@
 
 This is the helper repository for the [Introduction to Azure Bicep course on Udemy](https://www.google.com). 
 
-This repository contains all the solutions for each lesson.
+This repository contains the solutions for each lesson.
 
 - **Lesson 1:** Introduction to Azure Bicep
 - **Lesson 2:** Setting up the environment
