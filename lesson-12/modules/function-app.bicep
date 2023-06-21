@@ -5,7 +5,6 @@ param location string
 @description('Tags for all resources')
 param tags object = {}
 
-
 @description('The name of our function app resource')
 param functionAppName string
 
@@ -23,6 +22,7 @@ param applicationInsightsName string
 @description('App settings for the function app')
 param appSettings array
 
+
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' existing = {
   name: appServicePlanName
 }
@@ -34,6 +34,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing 
 resource appInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: applicationInsightsName
 }
+
 
 var storageAccountConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
 
@@ -80,3 +81,4 @@ resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
 }
 
 output functionAppName string = functionApp.name
+output functionAppId string = functionApp.id

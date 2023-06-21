@@ -1,2 +1,0 @@
-Test-AzTemplate -TemplatePath /Users/dylanbudgen/Workspace/udemy-tutorials/main.json
-Test-AzTemplate -TemplatePath /Users/dylanbudgen/Workspace/udemy-tutorials/main.json -Skip 'Location Should Not Be Hardcoded'

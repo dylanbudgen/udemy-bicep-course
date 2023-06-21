@@ -73,7 +73,7 @@ module applicationInsights 'modules/application-insights.bicep' = {
 }
 
 module compute 'compute.bicep' = {
-  name: 'compute'
+  name: 'deploy-compute'
   params: {
     apiKey: apiKey
     applicationInsightsName: applicationInsightsName
@@ -89,6 +89,5 @@ module compute 'compute.bicep' = {
 
 output storageAccountName string = storageAccount.outputs.storageAccountName
 output applicationInsightsName string = applicationInsights.outputs.applicationInsightsName
-output appServicePlanName string = compute.outputs.appServicePlan
+output appServicePlanName string = compute.outputs.appServicePlanName
 output functionAppName string = compute.outputs.functionAppName
-

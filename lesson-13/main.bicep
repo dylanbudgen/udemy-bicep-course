@@ -27,5 +27,5 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
 }
 
 
-output storageAccountName string = storageAccount.name // storageAccount.name // explain how thats the deployment name
+output storageAccountName string = storageAccount.name
 output storageAccountId string = storageAccount.id

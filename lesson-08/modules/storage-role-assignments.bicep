@@ -16,6 +16,8 @@ resource storageAccounts 'Microsoft.Storage/storageAccounts@2022-09-01' existing
   name: storageAccountName
 }]
 
+// note - this module should assign one role assignment and the loop be handled in main.bicep
+// this was for demostration purposes of indexed loops
 resource storageAccountRoleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' =  [for i in range(0, length((storageAccountNames))): {
   name: guid(storageAccounts[i].name, role.id, adGroupId)
   scope: storageAccounts[i]

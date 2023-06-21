@@ -42,7 +42,6 @@ module functionApp 'modules/function-app.bicep' = {
   params: {
     appServicePlanName: appServicePlanName
     appSettings: [
-
       {
         name: 'ApiKey'
         value: apiKey
@@ -56,5 +55,7 @@ module functionApp 'modules/function-app.bicep' = {
   }
 }
 
-output appServicePlan string = appServicePlan.outputs.appServicePlanName
+output appServicePlanName string = appServicePlan.outputs.appServicePlanName
+output appServicePlanId string = appServicePlan.outputs.appServicePlanId
 output functionAppName string = functionApp.outputs.functionAppName
+output functionAppId string = functionApp.outputs.functionAppId

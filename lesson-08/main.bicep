@@ -18,14 +18,15 @@ param auditStorageAccountName string
 ])
 param storageAccountSku string
 
+@description('ID of the AD group for role assignment')
+param adGroupId string
+
 @description('Deploy the audit storage account')
 param deployAuditStorageAccount bool = true
 
 @description('Deploy the audit storage account containers')
 param deployAuditStorageContainers bool = true
 
-@description('ID of the AD group for role assignment')
-param adGroupId string
 
 var storageBlobDataReaderId = '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
 
@@ -57,17 +58,19 @@ module auditStorageAccount 'modules/storage-account.bicep' = if (deployAuditStor
   }
 }
 
+var storageAccountNames = deployAuditStorageAccount ? [
+  storageAccount.name
+  auditStorageAccount.outputs.storageAccountName
+] : [
+  storageAccount.name
+]
+
 module roleAssignments 'modules/storage-role-assignments.bicep' = {
   name: 'storage-role-assignments'
   params: {
     adGroupId: adGroupId
     roleAssignmentId: storageBlobDataReaderId
-    storageAccountNames: deployAuditStorageAccount ? [
-      storageAccount.name
-      auditStorageAccount.outputs.storageAccountName
-    ] : [
-      storageAccount.name
-    ]
+    storageAccountNames: storageAccountNames
   }
 }
 

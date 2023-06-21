@@ -1,6 +1,6 @@
 {
-    "experimentalFeaturesEnabled": {
-      "userDefinedTypes": true,
-      "extensibility": true
-    }
-  }
+	"experimentalFeaturesEnabled": {
+		"userDefinedTypes": true,
+		"extensibility": true
+	}
+}
