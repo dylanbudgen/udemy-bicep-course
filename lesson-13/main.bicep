@@ -1,5 +1,5 @@
 @description('Location for the resources')
-param location string = 'westeurope'
+param location string = resourceGroup().location
 
 type storageAccountSkuType = 'Standard_LRS' | 'Standard_GRS'
 

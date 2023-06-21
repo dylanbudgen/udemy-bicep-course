@@ -1,8 +1,9 @@
+
 @description('Location for the resources')
 param location string = resourceGroup().location
 
 @minLength(3)
-@maxLength(24)
+@maxLength(23)
 @description('The name of the storage account')
 param storageAccountName string
 
@@ -18,61 +19,26 @@ param auditStorageAccountName string
 ])
 param storageAccountSku string
 
-@description('Deploy the audit storage account')
-param deployAuditStorageAccount bool = true
-
-@description('Deploy the audit storage account containers')
-param deployAuditStorageContainers bool = true
-
-@description('ID of the AD group for role assignment')
-param adGroupId string
-
-var storageBlobDataReaderId = '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
-
-var auditStorageContainers = [
-  'audit'
-  'logs'
-]
-
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+module storageAccount 'modules/storage-account.bicep' = {
   name: storageAccountName
-  location: location
-  sku: {
-    name: storageAccountSku
-  }
-  kind: 'StorageV2'
-  properties: {
-    minimumTlsVersion: 'TLS1_2'
-    supportsHttpsTrafficOnly: true
+  params: {
+    location: location
+    storageAccountName: storageAccountName
+    storageAccountSku: storageAccountSku
   }
 }
 
-module auditStorageAccount 'modules/storage-account.bicep' = if (deployAuditStorageAccount) {
+module auditStorageAccount 'modules/storage-account.bicep' = {
   name: auditStorageAccountName
   params: {
     location: location
     storageAccountName: auditStorageAccountName
     storageAccountSku: storageAccountSku
-    containerNames: deployAuditStorageContainers ? auditStorageContainers : []
   }
 }
 
-module roleAssignments 'modules/storage-role-assignments.bicep' = {
-  name: 'storage-role-assignments'
-  params: {
-    adGroupId: adGroupId
-    roleAssignmentId: storageBlobDataReaderId
-    storageAccountNames: deployAuditStorageAccount ? [
-      storageAccount.name
-      auditStorageAccount.outputs.storageAccountName
-    ] : [
-      storageAccount.name
-    ]
-  }
-}
-
-output storageAccountName string = storageAccount.name
-output storageAccountId string = storageAccount.id
+output storageAccountName string = storageAccount.outputs.storageAccountName
+output storageAccountId string = storageAccount.outputs.storageAccountId
 
 output auditStorageAccountName string = auditStorageAccount.outputs.storageAccountName
 output auditStorageAccountId string = auditStorageAccount.outputs.storageAccountId

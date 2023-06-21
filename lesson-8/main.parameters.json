@@ -10,6 +10,9 @@
         },
         "storageAccountSku": {
             "value": "Standard_LRS"
+        },
+        "adGroupId": {
+            "value": "<ad-group-id>"
         }
     }
 }

@@ -1,48 +1,78 @@
-
 @description('Location for the resources')
-param location string = 'westeurope'
+param location string = resourceGroup().location
 
+@minLength(3)
+@maxLength(24)
+@description('The name of the storage account')
+param storageAccountName string
 
-// loading json files
-var nsgconfig = loadJsonContent('nsg-security-rules.json')
+@minLength(3)
+@maxLength(24)
+@description('The name of the audit storage account')
+param auditStorageAccountName string
 
-resource newNSG 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
-  name: 'example-nsg'
+@description('Name of the SKU')
+@allowed([
+  'Standard_GRS'
+  'Standard_LRS'
+])
+param storageAccountSku string
+
+@description('Deploy the audit storage account')
+param deployAuditStorageAccount bool = true
+
+@description('Deploy the audit storage account containers')
+param deployAuditStorageContainers bool = true
+
+@description('ID of the AD group for role assignment')
+param adGroupId string
+
+var storageBlobDataReaderId = '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1'
+
+var auditStorageContainers = [
+  'audit'
+  'logs'
+]
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+  name: storageAccountName
   location: location
+  sku: {
+    name: storageAccountSku
+  }
+  kind: 'StorageV2'
   properties: {
-    securityRules: [
-      {
-        name: 'SSH'
-        properties: nsgconfig
-      }
+    minimumTlsVersion: 'TLS1_2'
+    supportsHttpsTrafficOnly: true
+  }
+}
+
+module auditStorageAccount 'modules/storage-account.bicep' = if (deployAuditStorageAccount) {
+  name: auditStorageAccountName
+  params: {
+    location: location
+    storageAccountName: auditStorageAccountName
+    storageAccountSku: storageAccountSku
+    containerNames: deployAuditStorageContainers ? auditStorageContainers : []
+  }
+}
+
+module roleAssignments 'modules/storage-role-assignments.bicep' = {
+  name: 'storage-role-assignments'
+  params: {
+    adGroupId: adGroupId
+    roleAssignmentId: storageBlobDataReaderId
+    storageAccountNames: deployAuditStorageAccount ? [
+      storageAccount.name
+      auditStorageAccount.outputs.storageAccountName
+    ] : [
+      storageAccount.name
     ]
   }
 }
 
-// loading yaml files
-var yml = loadYamlContent('example.yml')
+output storageAccountName string = storageAccount.name
+output storageAccountId string = storageAccount.id
 
-// loading text files
-var text = loadTextContent('nsg-security-rules.json')
-
-// loading files as base64
-var base64 = loadFileAsBase64('nsg-security-rules.json')
-
-
-// date functions
-param dateTime string = utcNow('u')
-var addNineDays = dateTimeAdd(dateTime, '+P9D')
-
-param convertedEpoch int = dateTimeToEpoch(dateTimeAdd(utcNow(), 'P1Y'))
-var convertedDatetime = dateTimeFromEpoch(convertedEpoch)
-
-
-// lambda functions
-
-var storageAccounts = loadJsonContent('example.json').storageAccounts
-
-output filteredStorageAccounts array = filter(storageAccounts, storageAccount => storageAccount.sku == 'Standard_GRS')
-
-output storageAccountNames array = map(storageAccounts, storageAccount => storageAccount.name)
-
-output storageAccountObject object = toObject(storageAccounts, storageAccount => storageAccount.name, storageAccount => storageAccount)
+output auditStorageAccountName string = auditStorageAccount.outputs.storageAccountName
+output auditStorageAccountId string = auditStorageAccount.outputs.storageAccountId

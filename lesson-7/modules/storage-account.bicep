@@ -1,6 +1,6 @@
 
 @description('Location for the resources')
-param location string 
+param location string
 
 @minLength(3)
 @maxLength(24)
@@ -23,9 +23,6 @@ param storageAccountSku string = 'Standard_LRS'
 ])
 param storageAccountKind string = 'StorageV2'
 
-@description('The names of containers for creation')
-param containerNames array = []
-
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   name: storageAccountName
@@ -39,19 +36,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     supportsHttpsTrafficOnly: true
   }
 }
-
-resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2021-02-01' = {
-  name: 'default'
-  parent: storageAccount
-}
-
-resource containers 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-02-01' = [ for containerName in containerNames : {
-  name: containerName
-  parent: blobServices
-  properties: {
-    publicAccess: 'None'
-  }
-}]
 
 output storageAccountName string = storageAccount.name
 output storageAccountId string = storageAccount.id

@@ -1,16 +1,9 @@
 
-# parameters file
-az deployment group create \
-    --subscription udemy-courses \
-    --resource-group bicep-course \
-    --name deployment \
-    --template-file main.bicep \
-    --parameters @params.json
+# azure cli
 
-# commandline parameters
 az deployment group create \
     --subscription udemy-courses \
     --resource-group bicep-course \
     --name deployment \
-    --template-file main.bicep \
-    --parameters storageAccountName='stbicepcoursedev' storageAccountSku='Standard_LRS'
+    --mode Complete \
+    --template-file main.bicep
