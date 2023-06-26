@@ -1,6 +1,6 @@
 # Welcome!
 
-This is the helper repository for the [Master Azure Bicep: Explore Advanced Features and Techniques](https://www.udemy.com/course/master-azure-bicep). 
+This is the helper repository for the [Master Azure Bicep: Explore Advanced Features and Techniques](https://www.udemy.com/course/master-azure-bicep) course on Udemy. 
 
 This repository contains the solutions for each lesson.
 
