@@ -13,8 +13,6 @@ This repository contains the solutions for each lesson.
 - **Lesson 7:** Working with modules in Azure Bicep
 - **Lesson 8:** Advanced Bicep concepts (loops, conditional deployments, existing resources)
 - **Lesson 9:** Testing and validating Azure Bicep templates
-- **Lesson 10:** Troubleshooting Azure Bicep deployments
-- **Lesson 11:** Bicep best practices
 - **Lesson 12:** Real-world Project – deploying a function app with logging
 - **Lesson 13:** Preview features
 - **Lesson 14:** Review and Next Steps
